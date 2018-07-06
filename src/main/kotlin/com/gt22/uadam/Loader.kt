@@ -1,12 +1,16 @@
 package com.gt22.uadam
 
+import com.google.gson.JsonObject
 import com.gt22.randomutils.Instances
-import com.gt22.uadam.data.*
+import com.gt22.uadam.data.Album
+import com.gt22.uadam.data.Author
+import com.gt22.uadam.data.BaseData
+import com.gt22.uadam.data.Group
+import com.gt22.uadam.utils.get
 import com.gt22.uadam.utils.obj
 import com.gt22.uadam.utils.str
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.streams.toList
 
 internal object Loader {
 
@@ -63,12 +67,15 @@ internal object Loader {
         return ret.toMap()
     }
 
-    internal fun loadSongs(path: Path, format: String, album: Album): Map<String, Song> {
-        return mapOf(*Files.list(path)
-                .filter { it.fileName.toString().endsWith(format) }
-                .sorted()
-                .map { Song().apply { loadSong(it, album) } }
-                .map { Pair(it.name, it) }.toList().toTypedArray())
+    internal fun <T : BaseData> loadRemote(json: JsonObject, parent: BaseData?, requiredType: String): MutableMap<String, T> {
+        val ret = mutableMapOf<String, T>()
+        json.entrySet().forEach { (k, v) ->
+            @Suppress("UNCHECKED_CAST")
+            ret[k] = getDataClass(requiredType).apply { createRemote(v.obj, k, parent) } as T
+        }
+        return ret
     }
+
+
 
 }

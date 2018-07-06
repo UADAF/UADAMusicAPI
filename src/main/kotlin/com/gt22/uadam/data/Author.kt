@@ -2,6 +2,7 @@ package com.gt22.uadam.data
 
 import com.google.gson.JsonObject
 import com.gt22.uadam.Loader
+import com.gt22.uadam.utils.obj
 import java.nio.file.Path
 
 open class Author : BaseData() {
@@ -32,6 +33,14 @@ open class Author : BaseData() {
         }
         super.createRoot(parent, path)
         albums = Loader.load(path, this, "album")
+    }
+
+    override fun createRemote(json: JsonObject, name: String, parent: BaseData?) {
+        if(parent !is Group) {
+            throw IllegalArgumentException("Author should be only created with a parent group")
+        }
+        super.createRemote(json, name, parent)
+        albums = Loader.loadRemote(json["children"].obj, this, "album")
     }
 
     override fun hasData(): Boolean {

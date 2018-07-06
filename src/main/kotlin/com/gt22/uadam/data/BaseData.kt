@@ -1,6 +1,7 @@
 package com.gt22.uadam.data
 
 import com.google.gson.JsonObject
+import com.gt22.uadam.utils.obj
 import com.gt22.uadam.utils.str
 import java.nio.file.Path
 
@@ -37,6 +38,16 @@ abstract class BaseData {
         img = parent?.img ?: ""
         title = ""
         format = parent?.format ?: ".mp3"
+    }
+
+    internal open fun createRemote(json: JsonObject, name: String, parent: BaseData?) {
+        this.parent = parent
+        this.name = name
+        val meta = json["meta"].obj
+        img = meta["img"]?.str ?: parent?.img ?: ""
+        format = meta["format"]?.str ?: parent?.format ?: ".mp3"
+
+        title = meta["title"]?.str ?: name
     }
 
     internal open fun hasData(): Boolean {

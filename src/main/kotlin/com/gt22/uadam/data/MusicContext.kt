@@ -11,8 +11,6 @@ import java.nio.file.Path
 open class MusicContext private constructor() : BaseData() {
 
 
-
-
     @Suppress("UNCHECKED_CAST")
     var groups: Map<String, Group>
         get() = children as Map<String, Group>
@@ -23,7 +21,8 @@ open class MusicContext private constructor() : BaseData() {
     override val path: String
         get() = "/"
 
-    private lateinit var dirPath: Path
+    lateinit var dirPath: Path
+        private set
 
     override fun load(json: JsonObject, name: String, parent: BaseData?, path: Path) {
         super.load(json, name, parent, path)
@@ -33,10 +32,12 @@ open class MusicContext private constructor() : BaseData() {
 
     override fun createRoot(parent: BaseData?, path: Path) = throw UnsupportedOperationException("Context can't be root")
 
+    override fun createRemote(json: JsonObject, name: String, parent: BaseData?) = throw UnsupportedOperationException("Local context can't be remote")
+
     companion object {
         fun create(dir: Path): MusicContext {
             val json = dir.resolve("music.info.json")
-            if(!Files.exists(json)) {
+            if (!Files.exists(json)) {
                 throw FileNotFoundException(json.toString())
             }
             val data = Instances.getParser().parse(Files.newBufferedReader(json)).obj

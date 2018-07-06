@@ -21,17 +21,15 @@ class Song : BaseData() {
     }
 
     fun loadSong(path: Path, parent: Album) {
-        this.parent = parent
-        name = path.fileName.toString()
-        img = parent.img
-        format = parent.format
-        title = name.substringBeforeLast('.')
+        loadSongRemote(path.toString(), parent)
     }
 
-    override fun search(s: String): List<BaseData> {
-//        if(s.isEmpty()) {
-//            return listOf(this)
-//        }
-        return super.search(s)
+    fun loadSongRemote(name: String, parent: Album) {
+        this.parent = parent
+        this.name = name
+        img = parent.img
+        format = parent.format
+        title = name.removeSuffix(format)
     }
+
 }
