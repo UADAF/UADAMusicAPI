@@ -2,7 +2,6 @@ package com.gt22.uadam.data
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import com.gt22.uadam.Loader
 import com.gt22.uadam.utils.arr
 import com.gt22.uadam.utils.str
 import java.nio.file.Files
