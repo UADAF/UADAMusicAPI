@@ -1,12 +1,11 @@
 package com.gt22.uadam
 
 import com.google.gson.JsonObject
-import com.gt22.randomutils.Instances
 import com.gt22.uadam.data.Album
 import com.gt22.uadam.data.Author
 import com.gt22.uadam.data.BaseData
 import com.gt22.uadam.data.Group
-import com.gt22.uadam.utils.get
+import com.gt22.uadam.utils.Instances
 import com.gt22.uadam.utils.obj
 import com.gt22.uadam.utils.str
 import java.nio.file.Files
