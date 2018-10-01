@@ -2,7 +2,7 @@ package com.gt22.uadam.data
 
 import com.google.gson.JsonObject
 import com.gt22.uadam.Loader
-import com.gt22.uadam.utils.Instances
+import com.gt22.uadam.utils.PARSER
 import com.gt22.uadam.utils.obj
 import java.net.URL
 import java.nio.file.Path
@@ -36,7 +36,7 @@ open class RemoteMusicContext private constructor() : BaseData() {
     companion object {
         fun create(url: URL, name: String): RemoteMusicContext {
             val ret = RemoteMusicContext()
-            val json = Instances.getParser().parse(url.openStream().bufferedReader())
+            val json = PARSER.parse(url.openStream().bufferedReader())
             ret.createRemote(json.obj, name, null)
             return ret
         }

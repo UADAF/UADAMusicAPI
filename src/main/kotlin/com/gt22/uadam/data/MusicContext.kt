@@ -5,7 +5,7 @@ import com.gt22.uadam.Loader
 import java.io.FileNotFoundException
 import java.nio.file.Files
 import java.nio.file.Path
-import com.gt22.uadam.utils.Instances
+import com.gt22.uadam.utils.PARSER
 import com.gt22.uadam.utils.obj
 
 open class MusicContext private constructor() : BaseData() {
@@ -40,7 +40,7 @@ open class MusicContext private constructor() : BaseData() {
             if (!Files.exists(json)) {
                 throw FileNotFoundException(json.toString())
             }
-            val data = Instances.getParser().parse(Files.newBufferedReader(json)).obj
+            val data = PARSER.parse(Files.newBufferedReader(json)).obj
             val context = MusicContext()
             context.load(data, dir.fileName.toString(), null, dir)
             return context

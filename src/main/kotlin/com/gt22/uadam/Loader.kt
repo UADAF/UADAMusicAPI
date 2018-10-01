@@ -5,7 +5,8 @@ import com.gt22.uadam.data.Album
 import com.gt22.uadam.data.Author
 import com.gt22.uadam.data.BaseData
 import com.gt22.uadam.data.Group
-import com.gt22.uadam.utils.Instances
+import com.gt22.uadam.utils.PARSER
+
 import com.gt22.uadam.utils.obj
 import com.gt22.uadam.utils.str
 import java.nio.file.Files
@@ -47,7 +48,7 @@ internal object Loader {
                 .filter { Files.isDirectory(it) } //Songs are handled separately, and json is already loaded
                 .sorted()
                 .forEach { dataPath ->
-                    val json = Instances.getParser().parse(
+                    val json = PARSER.parse(
                             Files.newBufferedReader(dataPath.resolve("music.info.json"), Charsets.UTF_8)).obj
                     val type = json["type"]!!.str
                     if (type == requiredType) { //Root element should load everything else
