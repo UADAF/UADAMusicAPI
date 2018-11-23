@@ -5,7 +5,7 @@ import com.gt22.uadam.utils.obj
 import com.gt22.uadam.utils.str
 import java.nio.file.Path
 
-abstract class BaseData {
+abstract class BaseData<T> where T : BaseData<T>, T : IContext{
     lateinit var name: String
         protected set
     lateinit var img: String
@@ -14,16 +14,26 @@ abstract class BaseData {
         protected set
     lateinit var format: String
         protected set
-    open var parent: BaseData? = null
+    open var parent: BaseData<T>? = null
         protected set
-    open lateinit var children: Map<String, BaseData>
+    open lateinit var children: Map<String, BaseData<T>>
         protected set
 
-    open val namedElements: Map<String, BaseData> by lazy(::doIndex)
+    open val namedElements: Map<String, BaseData<T>> by lazy(::doIndex)
+
+    @Suppress("UNCHECKED_CAST")
+    val context: T
+        get() {
+            var c = this
+            while(c !is IContext) {
+                c = c.parent!!
+            }
+            return c as T
+        }
 
     abstract val path: String
 
-    internal open fun load(json: JsonObject, name: String, parent: BaseData?, path: Path) {
+    internal open fun load(json: JsonObject, name: String, parent: BaseData<T>?, path: Path) {
         this.parent = parent
         this.name = name
         img = json["img"]?.str ?: parent?.img ?: ""
@@ -32,7 +42,7 @@ abstract class BaseData {
         title = json["title"]?.str ?: name
     }
 
-    internal open fun createRoot(parent: BaseData?, path: Path) {
+    internal open fun createRoot(parent: BaseData<T>?, path: Path) {
         this.parent = parent
         name = "_root"
         img = parent?.img ?: ""
@@ -40,7 +50,7 @@ abstract class BaseData {
         format = parent?.format ?: ".mp3"
     }
 
-    internal open fun createRemote(json: JsonObject, name: String, parent: BaseData?) {
+    internal open fun createRemote(json: JsonObject, name: String, parent: BaseData<T>?) {
         this.parent = parent
         this.name = name
         val meta = json["meta"].obj
@@ -54,8 +64,8 @@ abstract class BaseData {
         return true
     }
 
-    operator fun get(vararg names: String): BaseData? {
-        var cur: BaseData? = this
+    operator fun get(vararg names: String): BaseData<T>? {
+        var cur: BaseData<T>? = this
         names.forEach {
             cur = cur?.get(it)
         }
@@ -64,8 +74,8 @@ abstract class BaseData {
 
     operator fun get(name: String) = children[name]
 
-    protected open fun doIndex(): Map<String, BaseData> {
-        val m = mutableMapOf<String, BaseData>()
+    protected open fun doIndex(): Map<String, BaseData<T>> {
+        val m = mutableMapOf<String, BaseData<T>>()
         children.values.map {
             it.namedElements.toMap()
         }.forEach(m::putAll)
@@ -74,7 +84,7 @@ abstract class BaseData {
         return m
     }
 
-    open fun search(s: String): List<BaseData> {
+    open fun search(s: String): List<BaseData<T>> {
         if(s.isEmpty()) {
             return children.values.toList()
         }
@@ -82,7 +92,7 @@ abstract class BaseData {
             return search(*s.split('/').toTypedArray())
         }
         val lower = s.toLowerCase()
-        val ret = mutableListOf<BaseData>()
+        val ret = mutableListOf<BaseData<T>>()
         namedElements.forEach { (name, data) ->
             if(lower in name.toLowerCase()) {
                 ret.add(data)
@@ -91,9 +101,9 @@ abstract class BaseData {
         return ret
     }
 
-    open fun search(vararg s: String): List<BaseData> {
+    open fun search(vararg s: String): List<BaseData<T>> {
         var cur = listOf(this)
-        var next = mutableListOf<BaseData>()
+        var next = mutableListOf<BaseData<T>>()
         s.forEach { name ->
             cur.forEach { data ->
                 next.addAll(data.search(name))

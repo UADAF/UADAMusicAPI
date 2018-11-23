@@ -7,7 +7,7 @@ import com.gt22.uadam.utils.obj
 import java.net.URL
 import java.nio.file.Path
 
-open class RemoteMusicContext private constructor() : BaseData(), IContext {
+open class RemoteMusicContext private constructor() : BaseData<RemoteMusicContext>(), IContext {
 
 
     @Suppress("UNCHECKED_CAST")
@@ -23,11 +23,11 @@ open class RemoteMusicContext private constructor() : BaseData(), IContext {
     lateinit var url: URL
         private set
 
-    override fun load(json: JsonObject, name: String, parent: BaseData?, path: Path)  = throw UnsupportedOperationException("Remote context can't be local")
+    override fun load(json: JsonObject, name: String, parent: BaseData<RemoteMusicContext>?, path: Path)  = throw UnsupportedOperationException("Remote context can't be local")
 
-    override fun createRoot(parent: BaseData?, path: Path) = throw UnsupportedOperationException("Context can't be root")
+    override fun createRoot(parent: BaseData<RemoteMusicContext>?, path: Path) = throw UnsupportedOperationException("Context can't be root")
 
-    override fun createRemote(json: JsonObject, name: String, parent: BaseData?) {
+    override fun createRemote(json: JsonObject, name: String, parent: BaseData<RemoteMusicContext>?) {
         super.createRemote(json, name, parent)
         groups = Loader.loadRemote(json["children"].obj, this, "group")
     }

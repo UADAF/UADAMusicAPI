@@ -5,15 +5,11 @@ import com.gt22.uadam.Loader
 import com.gt22.uadam.utils.obj
 import java.nio.file.Path
 
-open class Group<T>: BaseData() where T : BaseData, T : IContext {
+open class Group<T>: BaseData<T>() where T : BaseData<T>, T : IContext {
 
     @Suppress("UNCHECKED_CAST")
-    val context: T
-        get() = parent as T
-
-    @Suppress("UNCHECKED_CAST")
-    var authors: Map<String, Author>
-        get() = children as Map<String, Author>
+    var authors: Map<String, Author<T>>
+        get() = children as Map<String, Author<T>>
         set(value) {
             children = value
         }
@@ -21,7 +17,7 @@ open class Group<T>: BaseData() where T : BaseData, T : IContext {
     override val path: String
         get() = "${context.path}$name"
 
-    override fun load(json: JsonObject, name: String, parent: BaseData?, path: Path) {
+    override fun load(json: JsonObject, name: String, parent: BaseData<T>?, path: Path) {
         if(parent !is IContext) {
             throw UnsupportedOperationException("Group should only be created with IContext parent")
         }
@@ -29,7 +25,7 @@ open class Group<T>: BaseData() where T : BaseData, T : IContext {
         authors = Loader.load(path, this, "author")
     }
 
-    override fun createRoot(parent: BaseData?, path: Path) {
+    override fun createRoot(parent: BaseData<T>?, path: Path) {
         if(parent !is IContext) {
             throw UnsupportedOperationException("Group should only be created with IContext parent")
         }
@@ -37,7 +33,7 @@ open class Group<T>: BaseData() where T : BaseData, T : IContext {
         authors = Loader.load(path, this, "author")
     }
 
-    override fun createRemote(json: JsonObject, name: String, parent: BaseData?) {
+    override fun createRemote(json: JsonObject, name: String, parent: BaseData<T>?) {
         if(parent !is IContext && parent !is RemoteMusicContext) {
             throw UnsupportedOperationException("Group should only be created with IContext parent")
         }

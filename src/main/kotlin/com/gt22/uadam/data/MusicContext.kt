@@ -8,7 +8,7 @@ import java.nio.file.Path
 import com.gt22.uadam.utils.PARSER
 import com.gt22.uadam.utils.obj
 
-open class MusicContext private constructor() : BaseData(), IContext {
+open class MusicContext private constructor() : BaseData<MusicContext>(), IContext {
 
 
     @Suppress("UNCHECKED_CAST")
@@ -24,15 +24,15 @@ open class MusicContext private constructor() : BaseData(), IContext {
     lateinit var dirPath: Path
         private set
 
-    override fun load(json: JsonObject, name: String, parent: BaseData?, path: Path) {
+    override fun load(json: JsonObject, name: String, parent: BaseData<MusicContext>?, path: Path) {
         super.load(json, name, parent, path)
         groups = Loader.load(path, this, "group")
         dirPath = path
     }
 
-    override fun createRoot(parent: BaseData?, path: Path) = throw UnsupportedOperationException("Context can't be root")
+    override fun createRoot(parent: BaseData<MusicContext>?, path: Path) = throw UnsupportedOperationException("Context can't be root")
 
-    override fun createRemote(json: JsonObject, name: String, parent: BaseData?) = throw UnsupportedOperationException("Local context can't be remote")
+    override fun createRemote(json: JsonObject, name: String, parent: BaseData<MusicContext>?) = throw UnsupportedOperationException("Local context can't be remote")
 
     companion object {
         fun create(dir: Path): MusicContext {

@@ -5,13 +5,13 @@ import com.gt22.uadam.Loader
 import com.gt22.uadam.utils.obj
 import java.nio.file.Path
 
-open class Author : BaseData() {
-    val group: Group
-        get() = parent as Group
+open class Author<T> : BaseData<T>() where T : BaseData<T>, T : IContext {
+    val group: Group<*>
+        get() = parent as Group<*>
 
     @Suppress("UNCHECKED_CAST")
-    var albums: Map<String, Album>
-        get() = children as Map<String, Album>
+    var albums: Map<String, Album<T>>
+        get() = children as Map<String, Album<T>>
         set(value) {
             children = value
         }
@@ -19,27 +19,30 @@ open class Author : BaseData() {
     override val path: String
         get() = "${group.path}/$name"
 
-    override fun load(json: JsonObject, name: String, parent: BaseData?, path: Path) {
-        if(parent !is Group) {
+    override fun load(json: JsonObject, name: String, parent: BaseData<T>?, path: Path) {
+        if(parent !is Group<T>) {
             throw IllegalArgumentException("Author should be only created with a parent group")
         }
         super.load(json, name, parent, path)
+        @Suppress("UNCHECKED_CAST")
         albums = Loader.load(path, this, "album")
     }
 
-    override fun createRoot(parent: BaseData?, path: Path) {
-        if(parent !is Group) {
+    override fun createRoot(parent: BaseData<T>?, path: Path) {
+        if(parent !is Group<T>) {
             throw IllegalArgumentException("Author should be only created with a parent group")
         }
         super.createRoot(parent, path)
+        @Suppress("UNCHECKED_CAST")
         albums = Loader.load(path, this, "album")
     }
 
-    override fun createRemote(json: JsonObject, name: String, parent: BaseData?) {
-        if(parent !is Group) {
+    override fun createRemote(json: JsonObject, name: String, parent: BaseData<T>?) {
+        if(parent !is Group<T>) {
             throw IllegalArgumentException("Author should be only created with a parent group")
         }
         super.createRemote(json, name, parent)
+        @Suppress("UNCHECKED_CAST")
         albums = Loader.loadRemote(json["children"].obj, this, "album")
     }
 
