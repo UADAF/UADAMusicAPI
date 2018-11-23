@@ -7,12 +7,12 @@ import com.gt22.uadam.utils.obj
 import java.net.URL
 import java.nio.file.Path
 
-open class RemoteMusicContext private constructor() : BaseData() {
+open class RemoteMusicContext private constructor() : BaseData(), IContext {
 
 
     @Suppress("UNCHECKED_CAST")
-    var groups: Map<String, Group>
-        get() = children as Map<String, Group>
+    var groups: Map<String, Group<RemoteMusicContext>>
+        get() = children as Map<String, Group<RemoteMusicContext>>
         set(value) {
             children = value
         }

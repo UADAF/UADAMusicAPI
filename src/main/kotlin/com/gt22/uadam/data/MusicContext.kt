@@ -8,12 +8,12 @@ import java.nio.file.Path
 import com.gt22.uadam.utils.PARSER
 import com.gt22.uadam.utils.obj
 
-open class MusicContext private constructor() : BaseData() {
+open class MusicContext private constructor() : BaseData(), IContext {
 
 
     @Suppress("UNCHECKED_CAST")
-    var groups: Map<String, Group>
-        get() = children as Map<String, Group>
+    var groups: Map<String, Group<MusicContext>>
+        get() = children as Map<String, Group<MusicContext>>
         set(value) {
             children = value
         }

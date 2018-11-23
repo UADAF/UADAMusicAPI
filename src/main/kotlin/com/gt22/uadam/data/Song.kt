@@ -21,7 +21,7 @@ class Song : BaseData() {
     }
 
     fun loadSong(path: Path, parent: Album) {
-        loadSongRemote(path.toString(), parent)
+        loadSongRemote(path.fileName.toString(), parent)
     }
 
     fun loadSongRemote(name: String, parent: Album) {
