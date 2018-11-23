@@ -54,7 +54,7 @@ internal object Loader {
                         @Suppress("UNCHECKED_CAST")
                         val data = getDataClass<C>(type) as T
                         data.load(json, dataPath.fileName.toString(), parent, dataPath)
-
+                        ret[data.name] = data
                     }
                 }
         @Suppress("UNCHECKED_CAST")
